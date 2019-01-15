@@ -1,39 +1,6 @@
 <?php
 echo "<a href=\"./\">BACK</a>";
-echo "<h1>1. Register</h1>";
-?>
-
-<?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    include_once 'connectDatabase.php';
-    $conn = connectDatabase();
-    $username = $_POST["username"];
-    $password = $_POST["password"];
-
-    // $sql = "CREATE TABLE customers(
-    //   id INT PRIMARY KEY AUTO_INCREMENT,
-    //   username varchar(50),
-    //   password varchar(50),
-    //   roleId integer,
-    //   foreign key(roleId) references roles(id)
-    // )";
-    
-    // $sql = "INSERT INTO customers(username,password,roleId) VALUES ('$username','$password','2')";
-    // $conn->query($sql);
-    try {
-      $data = array($username, $password, '2');
-      $stmta = $conn->prepare("INSERT INTO customers (username, password, roleId) VALUES (?, ?, ?)");
-      $stmta->execute($data);
-  
-      $conn = null;
-      echo "Register successfully";
-      }
-    catch(PDOException $e)
-      {
-      echo $sql . "<br>" . $e->getMessage();
-      }
-
-}
+echo "<h1>1. Login</h1>";
 ?>
 
 <!DOCTYPE html>
@@ -70,37 +37,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     include_once 'connectDatabase.php';
     $conn = connectDatabase();
 
-    // if ($result->num_rows > 0) {
-    //     while ($row = $result->fetch_assoc()) {
-    //         echo " UserID : " . $row["uId"] . " - Full Name : " . $row["uLastName"] . " " . $row["uFirstName"] . " - Email : " . $row["uEmail"] . "<br>";
-    //     }
-    // } else {
-    //     echo "0 results";
-    // }
+    $username = $_POST["username"];
+    $password = $_POST["password"];
 
-    $sql = "SELECT * FROM customers";
+    $sql = "SELECT * FROM customers where username = '$username' AND password = '$password'";
     //left join roles using (id)
     $result = $conn->query($sql);
     $result->setFetchMode(PDO::FETCH_ASSOC);
-      echo
-      "<table class=\"table text-center table-striped table-bordered\">
-        <thead>
-        <tr>
-          <th>ID</th>
-          <th>Username</th>
-        </tr>
-        </thead>
-      <tbody>
-        ";
-
-      while($row = $result->fetch()){
-        echo "<tr><td>".$row['id']."</td>".
-        "<td>".$row['username']."</td></tr>";
-      }
-      echo
-      "
-      </tbody>
-      </table>";
+    if ($result->fetch()) {
+      echo "Login successfully";
+    } else {
+      echo "Login fail";
+    }
+      // while($row = $result->fetch()){
+      //   echo "<tr><td>".$row['id']."</td>".
+      //   "<td>".$row['username']."</td></tr>";
+      // }
+      // echo
+      // "
+      // </tbody>
+      // </table>";
 }
 ?>
 
